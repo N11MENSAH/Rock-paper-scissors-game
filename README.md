@@ -1,6 +1,6 @@
 # Rock-Paper-Scissors Game
 
-A simple, interactive Rock-Paper-Scissors game created using HTML, CSS, and JavaScript. Play against the computer and see who wins!
+A simple, interactive Rock-Paper-Scissors game created using HTML. Play against the computer and see who wins!
 
 ## Features
 - Clean and responsive design.
