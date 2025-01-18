@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: #1E90FF;  /* Sea blue background for the entire page */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .game-container {
+      margin: 0 auto;
+      max-width: 400px;
+      padding: 20px;
+      background: #1E90FF;  /* Sea blue background for the game container */
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .choices {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+
+    .choice {
+      cursor: pointer;
+      padding: 20px;
+      font-size: 40px;
+      transition: transform 0.3s, background 0.3s, color 0.3s;
+    }
+
+    .choice:hover {
+      background: #007bff;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .choice:active {
+      transform: scale(0.9);
+    }
+
+    .result {
+      font-size: 18px;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    .score {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    .reset-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #ff5722;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .reset-btn:hover {
+      background: #e64a19;
+    }
+
+    .highlight-win {
+      color: green;
+    }
+
+    .highlight-lose {
+      color: red;
+    }
+
+    .highlight-tie {
+      color: gray;
+    }
+
+    .theme-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #4caf50;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .theme-btn:hover {
+      background: #388e3c;
+    }
+
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      display: none;
+    }
+
+    .confetti div {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ffeb3b;
+      animation: confetti 1s infinite;
+    }
+
+    @keyframes confetti {
+      0% {
+        transform: translateY(0) rotate(0);
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Rock Paper Scissors</h1>
+    <div class="choices">
+      <button class="choice" data-choice="rock">🪨</button>
+      <button class="choice" data-choice="paper">📄</button>
+      <button class="choice" data-choice="scissors">✂️</button>
+      <button class="choice" data-choice="lizard">🦎</button>
+      <button class="choice" data-choice="spock">🖖</button>
+    </div>
+    <div class="result">Make your choice!</div>
+    <div class="score">Player: 0 | Computer: 0</div>
+    <button class="reset-btn">Reset Game</button>
+    <button class="theme-btn">Toggle Dark Mode</button>
+  </div>
+  <div class="confetti"></div>
+
+  <script>
+    const choices = document.querySelectorAll('.choice');
+    const resultDiv = document.querySelector('.result');
+    const scoreDiv = document.querySelector('.score');
+    const resetButton = document.querySelector('.reset-btn');
+    const themeButton = document.querySelector('.theme-btn');
+    const confettiDiv = document.querySelector('.confetti');
+
+    let playerScore = 0;
+    let computerScore = 0;
+    let roundCount = 0;
+    const maxRounds = 5;
+    const sounds = {
+      choice: new Audio('choice.mp3'),
+      win: new Audio('win.mp3'),
+      lose: new Audio('lose.mp3'),
+      tie: new Audio('tie.mp3'),
+    };
+
+    // LocalStorage leaderboard
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || { player: 0, computer: 0 };
+    
+    const computerChoice = () => {
+      const options = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
+      return options[Math.floor(Math.random() * options.length)];
+    };
+
+    const determineWinner = (player, computer) => {
+      if (player === computer) return 'tie';
+      if (
+        (player === 'rock' && (computer === 'scissors' || computer === 'lizard')) ||
+        (player === 'paper' && (computer === 'rock' || computer === 'spock')) ||
+        (player === 'scissors' && (computer === 'paper' || computer === 'lizard')) ||
+        (player === 'lizard' && (computer === 'paper' || computer === 'spock')) ||
+        (player === 'spock' && (computer === 'rock' || computer === 'scissors'))
+      ) {
+        playerScore++;
+        return 'win';
+      } else {
+        computerScore++;
+        return 'lose';
+      }
+    };
+
+    const updateGame = () => {
+      scoreDiv.textContent = `Player: ${playerScore} | Computer: ${computerScore}`;
+      if (roundCount === maxRounds) {
+        const gameWinner = playerScore > computerScore ? 'Player' : 'Computer';
+        resultDiv.textContent = `${gameWinner} wins the game!`;
+        resultDiv.classList.add(gameWinner.toLowerCase());
+        showConfetti();
+        setTimeout(() => {
+          resetButton.style.display = 'inline-block';
+        }, 1000);
+      }
+    };
+
+    const showConfetti = () => {
+      confettiDiv.style.display = 'block';
+      for (let i = 0; i < 100; i++) {
+        const confettiPiece = document.createElement('div');
+        confettiPiece.style.left = `${Math.random() * 100}%`;
+        confettiPiece.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        confettiPiece.style.animationDelay = `${Math.random() * 1}s`;
+        confettiDiv.appendChild(confettiPiece);
+      }
+    };
+
+    const resetGame = () => {
+      playerScore = 0;
+      computerScore = 0;
+      roundCount = 0;
+      resultDiv.textContent = 'Make your choice!';
+      scoreDiv.textContent = 'Player: 0 | Computer: 0';
+      resultDiv.className = 'result';
+      resetButton.style.display = 'none';
+      confettiDiv.innerHTML = '';
+      confettiDiv.style.display = 'none';
+    };
+
+    choices.forEach(choice => {
+      choice.addEventListener('click', () => {
+        sounds.choice.play();
+        if (roundCount < maxRounds) {
+          const playerSelection = choice.dataset.choice;
+          const computerSelection = computerChoice();
+          const roundResult = determineWinner(playerSelection, computerSelection);
+
+          resultDiv.textContent = `You chose ${playerSelection}, computer chose ${computerSelection}.`;
+
+          if (roundResult === 'tie') {
+            resultDiv.textContent += ' It\'s a tie!';
+            resultDiv.className = 'result highlight-tie';
+            sounds.tie.play();
+          } else if (roundResult === 'win') {
+            resultDiv.textContent += ' You win!';
+            resultDiv.className = 'result highlight-win';
+            sounds.win.play();
+          } else {
+            resultDiv.textContent += ' Computer wins!';
+            resultDiv.className = 'result highlight-lose';
+            sounds.lose.play();
+          }
+
+          roundCount++;
+          updateGame();
+        }
+      });
+    });
+
+    resetButton.addEventListener('click', resetGame);
+    themeButton.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+    });
+  </script>
+</body>
+</html>
