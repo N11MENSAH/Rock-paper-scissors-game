@@ -8,7 +8,7 @@ A simple, interactive Rock-Paper-Scissors game created using HTML, CSS, and Java
 - Randomized computer choices for an exciting game every time.
 
 ## How to Play
-1. Open the `index.html` file in your browser.
+1. Open the RockPaperScissors.html file in your browser.
 2. Click one of the buttons: Rock, Paper, or Scissors.
 3. The computer will randomly select its choice.
 4. The winner will be displayed on the screen!
@@ -19,7 +19,7 @@ A simple, interactive Rock-Paper-Scissors game created using HTML, CSS, and Java
    git clone https://github.com/N11MENSAH/rock-paper-scissors-game.git
    ```
 2. Navigate to the project folder.
-3. Open `index.html` in your browser.
+3. Open RockPaperScissors.html in your browser.
 
 ## Screenshot
 ![Game Screenshot]![RockPaperScissors Screenshot](https://github.com/user-attachments/assets/c3cf8514-ecb4-4bfd-8ec1-f184b69c76c9)
