@@ -22,7 +22,7 @@ A simple, interactive Rock-Paper-Scissors game created using HTML, CSS, and Java
 3. Open `index.html` in your browser.
 
 ## Screenshot
-![Game Screenshot](https://via.placeholder.com/800x400 "Rock-Paper-Scissors Game")
+![Game Screenshot](file:///C:/Users/USER/OneDrive/Pictures/Screenshots/Screenshot%20(172).png)
 
 ## Contributing
 Contributions are welcome! Feel free to fork the repository and submit a pull request with improvements or new features.
